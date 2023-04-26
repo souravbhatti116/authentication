@@ -1,0 +1,6 @@
+// Levels of Security.
+
+
+Level 1 -  Username and Password authentication.
+Level 2 -  Encryption. (mongoose-Encryption package ) use of encrypt plugin
+Level 3 -  Environment Variables ( dotenv package ) - to save encryption and API Keys.  use .gitignore file.
