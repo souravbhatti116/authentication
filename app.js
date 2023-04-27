@@ -5,9 +5,11 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const ejs = require('ejs');
 const mongoose = require('mongoose');
-const encrypt = require('mongoose-encryption');
 const port = process.env.PORT || 3000
 const app = express();
+
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 app.use(express.static('public'));
 app.set('view engine', 'ejs');
@@ -21,7 +23,6 @@ const userSchema = new mongoose.Schema({
 })
 
 
-userSchema.plugin(encrypt,{secret: process.env.SECRET_KEY, encryptedFields: ['password']})
 
 const User = mongoose.model('User', userSchema)
 
@@ -42,11 +43,19 @@ app.post('/login', (req, res) => {
     User.findOne({ email: username})
     .then((foundUser) => {
         if (foundUser) {
-            if (foundUser.password == password) {
-                res.render('secrets');
-            } else {
-                res.send("Wrong email/password combination."); 
-            }
+            bcrypt.compare(password, foundUser.password)
+            .then((result) => {
+                if (result === true) {
+                    res.render('secrets')
+                } else {
+                    res.send('</h1> Wrong Password. </h1>')
+                }
+            })
+            // if (foundUser.password == password) {
+            //     res.render('secrets');
+            // } else {
+            //     res.send("Wrong email/password combination."); 
+            // }
         } else {  
             res.redirect('/register');
         }
@@ -62,19 +71,23 @@ app.get('/register', (req, res) => {
 
 app.post('/register', (req, res) => {
     let username = req.body.username;
-    let password = req.body.password;
+    let password = (req.body.password);
 
+    
     User.findOne({ email: username})
     .then((foundUser) => {
         if (foundUser) {
             res.redirect("/login")
         } else {  
-            let newUser = User({
-                email: username,
-                password: password
+            bcrypt.hash(password, saltRounds)
+            .then((hash)=>{
+                let newUser = User({
+                    email: username,
+                    password: hash
+                })
+                newUser.save().then((response) => res.redirect("/register"))
+                // console.log("user Does not exist.")
             })
-            newUser.save().then((response) => res.redirect("/register"))
-            // console.log("user Does not exist.")
         }
     })
 

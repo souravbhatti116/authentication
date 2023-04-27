@@ -2,5 +2,13 @@
 
 
 Level 1 -  Username and Password authentication.
-Level 2 -  Encryption. (mongoose-Encryption package ) use of encrypt plugin
-Level 3 -  Environment Variables ( dotenv package ) - to save encryption and API Keys.  use .gitignore file.
+
+Level 2 -  Encryption. (mongoose-Encryption Package ) use of encrypt plugin
+           Environment Variables ( dotenv Package ) - to save encryption and API Keys.  use .gitignore file.
+
+Level 3 -  Hashing (md5 package)
+
+Level 4 - Salting and Hashing (bcrypt Package)
+
+Level 5 - Cookies and Sessions (Passport Package) passport, passport-local, passport-local-mongoose, express-session
+
